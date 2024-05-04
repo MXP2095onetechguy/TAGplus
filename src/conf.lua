@@ -1,6 +1,13 @@
 local libConf = {}
 
-function libConf.getConf(t) -- Explicit is better than implicit
+function libConf.fillConf(t) -- A method actually used to fill the table for getConf
+    t.window = {}
+    t.audio = {}
+    t.modules = {}
+end
+
+
+function libConf.getConf(t) -- Explicit is better than implicit. We fill the configuration for any table here
     -- Setup game window
     t.window.title = "The Apul Game+"
     t.console = false
@@ -44,6 +51,6 @@ function libConf.getConf(t) -- Explicit is better than implicit
     t.modules.window = true
 end
 
-love.conf = libConf.getConf
+love.conf = libConf.getConf -- Where love.conf is really defined in
 
 return libConf
