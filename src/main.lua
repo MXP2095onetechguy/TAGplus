@@ -31,11 +31,18 @@ function love.update(dt) -- Perform updates
     end
 end
 
+function love.mousepressed(x, y, btn, istouch)
+    if isGameSleeping then return end -- Sleep the game if paused
+    if gameState == "GAME" then game.mousepressed(x, y, btn, istouch) end
+end
+
 function love.draw() -- Draw graphics and things
-    love.graphics.clear(bgColor)
+    love.graphics.clear(bgColor) -- Set a background color
+
+    if isGameSleeping then return end -- Sleep the game if paused
     if gameState == "GAME" then game.draw(love) end -- Draw the game
 end
 
 function love.quit() -- Handle some quit
-    game.quit()
+    game.quit() -- Quite on the game
 end
