@@ -38,7 +38,7 @@ function libConf.getConf(t) -- Explicit is better than implicit. We fill the con
     t.modules.graphics = true
     t.modules.image = true
     t.modules.joystick = false
-    t.modules.keyboard = false
+    t.modules.keyboard = true
     t.modules.math = true
     t.modules.mouse = true
     t.modules.physics = true
