@@ -30,7 +30,7 @@ function love.load() -- Load some assets and things
     love.graphics.setNewFont("assets/font/Handlee.ttf", 18) -- Load a new font
 
     -- Eagerly load the BGM
-    bgmSourceMusic = love.audio.newSource("assets/audio/bgm.ogg", "stream")
+    bgmSourceMusic = love.audio.newSource("assets/audio/classicbgm.ogg", "stream")
 
     -- Eagerly load home screen
     home.load(love, function(state, turbmode)

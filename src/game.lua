@@ -25,6 +25,8 @@ local world = nil -- Physics world
 local worldBorder = {} -- World border for the physics world
 local player = nil -- Player
 
+local objects = {}
+
 function game.focus(love, focus) -- Focus handler
     do -- Music playback focus check
         if bgmSource then -- BGM Source nil check
@@ -77,23 +79,36 @@ function game.load(love, turb, bgmsrc, exitrequester) -- Onload game
 
     do -- Setup world border
         local UIGround = {} -- The ground AKA the UI Rect aka the Bottom Wall.
-        UIGround.body = love.physics.newBody(world, UIRect.width/2, love.graphics.getHeight()-(UIRect.height/2))
+        UIGround.body = love.physics.newBody(world, UIRect.width/2, love.graphics.getHeight()-(UIRect.height/2), "static")
         UIGround.shape = love.physics.newRectangleShape(UIRect.width, UIRect.height)
         UIGround.fixture = love.physics.newFixture(UIGround.body, UIGround.shape)
 
         local leftWall = {}
-        leftWall.body = love.physics.newBody(world, -30, love.graphics.getHeight()/2)
-        leftWall.shape = love.physics.newRectangleShape(30, love.graphics.getHeight())
+        leftWall.body = love.physics.newBody(world, (UIRect.height * -1)/2, love.graphics.getHeight()/2, "static")
+        leftWall.shape = love.physics.newRectangleShape(UIRect.height, love.graphics.getHeight())
         leftWall.fixture = love.physics.newFixture(leftWall.body, leftWall.shape)
+
+        local rightWall = {}
+        rightWall.body = love.physics.newBody(world, (UIRect.height/2) + love.graphics.getWidth(), love.graphics.getHeight()/2, "static")
+        rightWall.shape = love.physics.newRectangleShape(UIRect.height, love.graphics.getHeight())
+        rightWall.fixture = love.physics.newFixture(rightWall.body, rightWall.shape)
+
+        local roof = {}
+        roof.body = love.physics.newBody(world, UIRect.width/2, (UIRect.height * -1)/2, "static")
+        roof.shape = love.physics.newRectangleShape(UIRect.width, UIRect.height)
+        roof.fixture = love.physics.newFixture(roof.body, roof.shape)
 
         worldBorder.UIGround = UIGround
         worldBorder.leftWall = leftWall
+        worldBorder.rightWall = rightWall
+        worldBorder.roof = roof
     end
 
+    do -- Setup player
+        player = abby(love, world)
+    end
 
-
-    -- Play BGM
-    do
+    do -- Play BGM
         local pitch = (turbMode and {consts.TURB_BGM_PITCH} or {consts.NORM_BGM_PITCH})[1] -- Get pitch from mode
         bgmSource:setPitch(pitch) -- Set pitch depending on TurbMode
         bgmSource:setLooping(true) -- set Looping for BGM
@@ -103,6 +118,8 @@ end
 
 function game.update(love, dt) -- Update game
     world:update(dt)
+
+    player:update(love, dt)
 end
 
 function game.draw(love) -- Paint the game
@@ -112,12 +129,19 @@ function game.draw(love) -- Paint the game
             local wb = worldBorder -- An alias for the World Border
             local uig = wb.UIGround -- An alias for the Ground.
             local lw = wb.leftWall -- An alias for the left wall
-            love.graphics.setColor(0.28, 0.63, 0.05)
-            -- love.graphics.polygon("fill", uig.body:getWorldPoints(uig.shape:getPoints())) -- Paint ground
+            local rw = wb.rightWall -- An alias for the right wall
+            local roof = wb.roof -- An alias for thr roof
+            love.graphics.setColor(0.28, 0.63, 0.05, 1) -- Set color
 
-            love.graphics.polygon("fill", lw.body:getWorldPoints(lw.shape:getPoints()))
+            love.graphics.polygon("fill", uig.body:getWorldPoints(uig.shape:getPoints())) -- Paint ground/UIRect
+            love.graphics.polygon("fill", lw.body:getWorldPoints(lw.shape:getPoints())) -- Paint left wall
+            love.graphics.polygon("fill", rw.body:getWorldPoints(rw.shape:getPoints())) -- Paint right wall
+            love.graphics.polygon("fill", roof.body:getWorldPoints(roof.shape:getPoints())) -- Paint the roof
+
             love.graphics.pop() -- Pop for default
         end
+
+        player:draw(love) -- Paint Abby, the player
     end
 
     do -- Painting Game UI
@@ -160,6 +184,7 @@ function game.exit(love) -- On when game is not played (game state is not playin
 end
 
 function game.mousepressed(x, y, button, _) -- Handle mouse clicks, for the player
+    player:tp(x, y)
 end
 
 function game.quit(love) -- On exit of the app itself

@@ -75,13 +75,10 @@ end
 
 function home.draw(love)
     do -- Draw the logo
-        love.graphics.push() -- Push the changes to prepare for this one
         local sw = love.graphics.getWidth() -- Get screen width
         local sh = love.graphics.getHeight() -- Get screen height
-        love.graphics.scale(0.5) -- Set scale
         love.graphics.setColor(1, 1, 1, 1) --- Set color
-        love.graphics.draw(logo, (sw/2), sh/4)
-        love.graphics.pop() -- Pop the changes off into the default one, we don't assume others.
+        love.graphics.draw(logo, (sw/2)-(logo:getWidth()/2), sh/4, 0, 0.5, 0.5)
     end
 
     do -- Draw buttons
