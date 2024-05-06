@@ -1,17 +1,13 @@
 local game = {} -- A table for exporting the methods
 
+-- Import constants
+local consts = require("consts")
+
 -- Import game objects
 local abby = require("abby") -- Import the main player/Abby
 local dmkid = require("dmkid") -- Import the enemy/D-Money kid
 
 local gameConf = {} -- Get config for game
-
--- CONSTANTS
-local NORM_MAX_HELTH = 10 -- Maximum helth for normal mode
-local TURB_MAX_HELTH = 5 -- Maximum helth for turb mode/hard mode
-
-local NORM_BGM_PITCH = 1 -- BGM Pitch for normal mode
-local TURB_BGM_PITCH = 1.24 -- BGM Pitch for turb mode/hard mode
 
 -- Game Info Thingys
 local font = nil
@@ -20,7 +16,7 @@ local bgmSource = nil
 
 -- Game states
 local score = 0 -- Score
-local helth = NORM_MAX_HELTH -- Helth
+local helth = consts.NORM_MAX_HELTH -- Helth
 local turbMode = false -- Turb mode setting/Hard mode enabled?
 local exitRequester = nil -- A callback that is invoked when the game requests an exit to a new gameState -> function(newState)
 
@@ -41,7 +37,7 @@ function game.focus(love, focus) -- Focus handler
     end
 end
 
-function game.load(love, turb, exitrequester) -- Onload game
+function game.load(love, turb, bgmsrc, exitrequester) -- Onload game
     -- Setup turb mode
     turbMode = turb
 
@@ -50,7 +46,7 @@ function game.load(love, turb, exitrequester) -- Onload game
 
     -- Set up vars
     do -- Setup helth
-        local helf = (turbMode and {TURB_MAX_HELTH} or {NORM_MAX_HELTH})[1] -- Get helth from current mode
+        local helf = (turbMode and {consts.TURB_MAX_HELTH} or {consts.NORM_MAX_HELTH})[1] -- Get helth from current mode
         helth = helf -- Set helth
     end
 
@@ -64,7 +60,7 @@ function game.load(love, turb, exitrequester) -- Onload game
     font = love.graphics.getFont()
 
     -- Setup BGM
-    bgmSource = love.audio.newSource("assets/audio/bgm.ogg", "stream")
+    bgmSource = bgmsrc
 
     do -- Setup physics
         local meterPx = 64
@@ -85,14 +81,20 @@ function game.load(love, turb, exitrequester) -- Onload game
         UIGround.shape = love.physics.newRectangleShape(UIRect.width, UIRect.height)
         UIGround.fixture = love.physics.newFixture(UIGround.body, UIGround.shape)
 
+        local leftWall = {}
+        leftWall.body = love.physics.newBody(world, -30, love.graphics.getHeight()/2)
+        leftWall.shape = love.physics.newRectangleShape(30, love.graphics.getHeight())
+        leftWall.fixture = love.physics.newFixture(leftWall.body, leftWall.shape)
+
         worldBorder.UIGround = UIGround
+        worldBorder.leftWall = leftWall
     end
 
 
 
     -- Play BGM
     do
-        local pitch = (turbMode and {TURB_BGM_PITCH} or {NORM_BGM_PITCH})[1] -- Get pitch from mode
+        local pitch = (turbMode and {consts.TURB_BGM_PITCH} or {consts.NORM_BGM_PITCH})[1] -- Get pitch from mode
         bgmSource:setPitch(pitch) -- Set pitch depending on TurbMode
         bgmSource:setLooping(true) -- set Looping for BGM
         bgmSource:play() -- Play the BGM
@@ -106,10 +108,15 @@ end
 function game.draw(love) -- Paint the game
     do -- Painting the gameObjects
         do -- Paint the worldborder, mostly for debug purposes
+            love.graphics.push() -- Push for this painting
             local wb = worldBorder -- An alias for the World Border
             local uig = wb.UIGround -- An alias for the Ground.
+            local lw = wb.leftWall -- An alias for the left wall
             love.graphics.setColor(0.28, 0.63, 0.05)
-            love.graphics.polygon("fill", uig.body:getWorldPoints(uig.shape:getPoints()))
+            -- love.graphics.polygon("fill", uig.body:getWorldPoints(uig.shape:getPoints())) -- Paint ground
+
+            love.graphics.polygon("fill", lw.body:getWorldPoints(lw.shape:getPoints()))
+            love.graphics.pop() -- Pop for default
         end
     end
 
@@ -139,6 +146,11 @@ function game.draw(love) -- Paint the game
                 scoreTxt,
                 (UIRect.width) - (font:getWidth(scoreTxt)), textYpos
             )
+        end
+
+        if turbMode then -- Print Hard mode on top left
+            love.graphics.setColor(1, 0, 0, 1)
+            love.graphics.print("Turb Mode", 0, 0)
         end
     end
 end
