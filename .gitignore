@@ -3,3 +3,4 @@
 **/*.kra~
 **/*.kra-autosave.kra
 **/*.app/
+*.env

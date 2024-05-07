@@ -19,6 +19,17 @@ To exit, just click anywhere while on the jukebox screen.
 
 =CREDITS & DOCS
 Its for crediting all the used parts of the game.
-It also instructs you how to extract the .love file to access the attributions, licensing info and this documentation.
 It can also show this documentation as a dialog box.
 TLDR: A guide and credit screen.
+
+
+=>HOW TO ACCESS THE ATTRIBS, LICENSE AND INTERNALS
+First, somehow extract the contents from the .love file, .app,  or .exe.
+With the .love file, just unzip it like a zip file as its a zip file.
+    - Rename .love file to zip
+    - Unzip the newly renamed file
+With the .app file, you can access the insides.
+    - Right click and click on show package content
+    - Go to the contents folder and go to the resources folder
+    - You should see a .love file. Unzip it just like how you unzip .love files.
+With the .exe and .appimage file, you better pray because Idk how to do the extraction.

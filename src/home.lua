@@ -77,7 +77,7 @@ function home.load(love, exitrequester)
         CREDITDOCSBTN.msgColor = {
             r = 0,
             g = 0,
-            b = 0,
+            b = 1,
             a = 1
         }
         CREDITDOCSBTN.x = JUKEBTN.x + JUKEBTN.width
