@@ -69,14 +69,14 @@ function home.load(love, exitrequester)
 
         CREDITDOCSBTN = {}
         CREDITDOCSBTN.color = {
-            r = 1,
+            r = 0.5,
             g = 0,
-            b = 1,
+            b = 0.5,
             a = 1
         }
         CREDITDOCSBTN.msgColor = {
-            r = 0,
-            g = 0,
+            r = 1,
+            g = 1,
             b = 1,
             a = 1
         }
@@ -85,6 +85,25 @@ function home.load(love, exitrequester)
         CREDITDOCSBTN.height = height
         CREDITDOCSBTN.y = sh - height
         CREDITDOCSBTN.width = sw/4
+
+        EXITBTN = {}
+        EXITBTN.color = {
+            r = 1,
+            g = 0,
+            b = 0,
+            a = 1
+        }
+        EXITBTN.msgColor = {
+            r = 1,
+            g = 1,
+            b = 1,
+            a = 1
+        }
+        EXITBTN.x = CREDITDOCSBTN.x + CREDITDOCSBTN.width
+        EXITBTN.msg = "Quit & Exit"
+        EXITBTN.height = height
+        EXITBTN.y = sh - height
+        EXITBTN.width = sw/4
     end
 end
 
@@ -107,8 +126,8 @@ function home.draw(love)
             love.graphics.rectangle("fill", GAMEBTN.x, GAMEBTN.y, GAMEBTN.width, GAMEBTN.height)
             love.graphics.setColor(GAMEBTN.msgColor.r, GAMEBTN.msgColor.g, GAMEBTN.msgColor.b, GAMEBTN.msgColor.a)
             love.graphics.print(GAMEBTN.msg, 
-                (GAMEBTN.x + (GAMEBTN.width/2)) - font:getWidth(GAMEBTN.msg), 
-                (GAMEBTN.y + GAMEBTN.height) - font:getHeight(GAMEBTN.msg)
+                (GAMEBTN.x + (GAMEBTN.width/2)) - (font:getWidth(GAMEBTN.msg)/2), 
+                (GAMEBTN.y + GAMEBTN.height) - (font:getHeight(GAMEBTN.msg))
             )
         end
 
@@ -117,8 +136,8 @@ function home.draw(love)
             love.graphics.rectangle("fill", JUKEBTN.x, JUKEBTN.y, JUKEBTN.width, JUKEBTN.height)
             love.graphics.setColor(JUKEBTN.msgColor.r, JUKEBTN.msgColor.g, JUKEBTN.msgColor.b, JUKEBTN.msgColor.a)
             love.graphics.print(JUKEBTN.msg, 
-                (JUKEBTN.x + (JUKEBTN.width/2)) - font:getWidth(JUKEBTN.msg), 
-                (JUKEBTN.y + JUKEBTN.height) - font:getHeight(JUKEBTN.msg)
+                (JUKEBTN.x + (JUKEBTN.width/2)) - (font:getWidth(JUKEBTN.msg)/2), 
+                (JUKEBTN.y + JUKEBTN.height) - (font:getHeight(JUKEBTN.msg))
             )
         end
 
@@ -127,8 +146,18 @@ function home.draw(love)
             love.graphics.rectangle("fill", CREDITDOCSBTN.x, CREDITDOCSBTN.y, CREDITDOCSBTN.width, CREDITDOCSBTN.height)
             love.graphics.setColor(CREDITDOCSBTN.msgColor.r, CREDITDOCSBTN.msgColor.g, CREDITDOCSBTN.msgColor.b, CREDITDOCSBTN.msgColor.a)
             love.graphics.print(CREDITDOCSBTN.msg, 
-                (CREDITDOCSBTN.x + (CREDITDOCSBTN.width/2)) - font:getWidth(CREDITDOCSBTN.msg)/2, 
-                (CREDITDOCSBTN.y + CREDITDOCSBTN.height) - font:getHeight(CREDITDOCSBTN.msg)
+                (CREDITDOCSBTN.x + (CREDITDOCSBTN.width/2)) - (font:getWidth(CREDITDOCSBTN.msg)/2), 
+                (CREDITDOCSBTN.y + CREDITDOCSBTN.height) - (font:getHeight(CREDITDOCSBTN.msg))
+            )
+        end
+
+        do -- Exit button
+            love.graphics.setColor(EXITBTN.color.r, EXITBTN.color.g, EXITBTN.color.b, EXITBTN.color.a)
+            love.graphics.rectangle("fill", EXITBTN.x, EXITBTN.y, EXITBTN.width, EXITBTN.height)
+            love.graphics.setColor(EXITBTN.msgColor.r, EXITBTN.msgColor.g, EXITBTN.msgColor.b, EXITBTN.msgColor.a)
+            love.graphics.print(EXITBTN.msg, 
+                (EXITBTN.x + (EXITBTN.width/2)) - (font:getWidth(EXITBTN.msg)/2), 
+                (EXITBTN.y + EXITBTN.height) - (font:getHeight(EXITBTN.msg))
             )
         end
     end
@@ -147,6 +176,10 @@ function home.mousepressed(x, y, btn, _)
 
         if inBoxRange(x, y, CREDITDOCSBTN.x, CREDITDOCSBTN.y, CREDITDOCSBTN.width, CREDITDOCSBTN.height) then -- Credits and docs button logic
             exitRequester("CREDITS")
+        end
+
+        if inBoxRange(x, y, EXITBTN.x, EXITBTN.y, EXITBTN.width, EXITBTN.height) then -- Credits and docs button logic
+            love.event.quit()
         end
     end
 end
