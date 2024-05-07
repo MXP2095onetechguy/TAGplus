@@ -44,7 +44,7 @@ function love.load(args) -- Load some assets and things
     local classicBGM = false -- Variable to set the classic BGM instead of the new BGM. eventually, this can be set by the player.
     local envfile = nil -- Path to .env file for config
 
-    do -- Load some config as .env
+    --[[do -- Load some config as .env
         local envPairs, err = denv.load(
             love.filesystem.getSourceBaseDirectory() 
             .. "/config.env"
@@ -55,10 +55,8 @@ function love.load(args) -- Load some assets and things
                 classicBGM = (((classicBGMEnv and (string.lower(classicBGMEnv) == "true")) and {true} or {false})[1])
                 -- error(classicBGMEnv)
             end
-        else
-            error(err)
         end
-    end
+    end]]
 
     love.graphics.setBackgroundColor(bgColor) -- Set a background color
     love.graphics.setNewFont("assets/font/Handlee.ttf", 18) -- Load a new font

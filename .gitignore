@@ -2,4 +2,4 @@
 *.love
 **/*.kra~
 **/*.kra-autosave.kra
-love.app/
+**/*.app/
