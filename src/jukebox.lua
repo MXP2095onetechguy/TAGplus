@@ -64,7 +64,7 @@ function jukebox.draw(love)
         if turbState then
             love.graphics.push()
             love.graphics.setColor(1, 0, 0, 1)
-            love.graphics.print("TURB TIME!", love.graphics.getWidth()/2, love.graphics.getHeight()/2)
+            love.graphics.print("TURB TIME!", love.graphics.getWidth()/2, (love.graphics.getHeight()/2))
             love.graphics.pop()
         end
     end

@@ -1,0 +1,24 @@
+Documentation for The Apul Game+
+
+This is a documentation for the game.
+
+=GAMEPLAY
+To play as Abby, you just click around the screen. The game is built for mouse controls only.
+There are two types of DMKids. The bouncer and the zipper.
+The bouncer just bounces from left to right. The zipper dashes across before dropping down.
+There are 3 items.
+- Apul - Gain score
+- High Heel - Gain helth
+- Golden Apul - Explode away all the DMKids
+
+Turb mode is a harder version. Less helth, more intense song, and more DMKids.
+
+=JUKEBOX
+Its a jukebox. It allows you to listen to the songs without having to worry about gameplay.
+To exit, just click anywhere while on the jukebox screen.
+
+=CREDITS & DOCS
+Its for crediting all the used parts of the game.
+It also instructs you how to extract the .love file to access the attributions, licensing info and this documentation.
+It can also show this documentation as a dialog box.
+TLDR: A guide and credit screen.

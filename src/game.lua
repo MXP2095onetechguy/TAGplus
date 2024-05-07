@@ -24,8 +24,7 @@ local exitRequester = nil -- A callback that is invoked when the game requests a
 local world = nil -- Physics world
 local worldBorder = {} -- World border for the physics world
 local player = nil -- Player
-
-local objects = {}
+local dmKids = {} -- DMKids
 
 function game.focus(love, focus) -- Focus handler
     do -- Music playback focus check

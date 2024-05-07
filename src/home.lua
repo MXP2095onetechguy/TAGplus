@@ -7,7 +7,7 @@ local exitRequester = nil -- A method used for dealing with chaning game state -
 -- Buttons
 local GAMEBTN = nil -- Play button
 local JUKEBTN = nil -- Jukebox button
-local CREDITSBTN = nil -- Credits button
+local CREDITDOCSBTN = nil -- Credits and Documentation button
 local EXITBTN = nil -- Exit button
 
 function inBoxRange(mx, my, rx, ry, rw, rh) -- A function used to check if mouse x and mouse y is in box?
@@ -67,6 +67,24 @@ function home.load(love, exitrequester)
         JUKEBTN.y = sh - height
         JUKEBTN.width = sw/4
 
+        CREDITDOCSBTN = {}
+        CREDITDOCSBTN.color = {
+            r = 1,
+            g = 0,
+            b = 1,
+            a = 1
+        }
+        CREDITDOCSBTN.msgColor = {
+            r = 0,
+            g = 0,
+            b = 0,
+            a = 1
+        }
+        CREDITDOCSBTN.x = JUKEBTN.x + JUKEBTN.width
+        CREDITDOCSBTN.msg = "Credits & Docs"
+        CREDITDOCSBTN.height = height
+        CREDITDOCSBTN.y = sh - height
+        CREDITDOCSBTN.width = sw/4
     end
 end
 
@@ -103,18 +121,32 @@ function home.draw(love)
                 (JUKEBTN.y + JUKEBTN.height) - font:getHeight(JUKEBTN.msg)
             )
         end
+
+        do -- Credits button
+            love.graphics.setColor(CREDITDOCSBTN.color.r, CREDITDOCSBTN.color.g, CREDITDOCSBTN.color.b, CREDITDOCSBTN.color.a)
+            love.graphics.rectangle("fill", CREDITDOCSBTN.x, CREDITDOCSBTN.y, CREDITDOCSBTN.width, CREDITDOCSBTN.height)
+            love.graphics.setColor(CREDITDOCSBTN.msgColor.r, CREDITDOCSBTN.msgColor.g, CREDITDOCSBTN.msgColor.b, CREDITDOCSBTN.msgColor.a)
+            love.graphics.print(CREDITDOCSBTN.msg, 
+                (CREDITDOCSBTN.x + (CREDITDOCSBTN.width/2)) - font:getWidth(CREDITDOCSBTN.msg)/2, 
+                (CREDITDOCSBTN.y + CREDITDOCSBTN.height) - font:getHeight(CREDITDOCSBTN.msg)
+            )
+        end
     end
 end
 
 function home.mousepressed(x, y, btn, _)
     if exitRequester then
-        if inBoxRange(x, y, GAMEBTN.x, GAMEBTN.y, GAMEBTN.width, GAMEBTN.height) then
+        if inBoxRange(x, y, GAMEBTN.x, GAMEBTN.y, GAMEBTN.width, GAMEBTN.height) then -- Gameplay button logic
             local turbTime = love.window.showMessageBox("Game time!", "Would you like Turb mode for a hard mode?", {"Yes", "No"}, "info", true) == 1
             exitRequester("GAME", turbTime)
         end
 
-        if inBoxRange(x, y, JUKEBTN.x, JUKEBTN.y, JUKEBTN.width, JUKEBTN.height) then
+        if inBoxRange(x, y, JUKEBTN.x, JUKEBTN.y, JUKEBTN.width, JUKEBTN.height) then -- Jukebox button logic
             exitRequester("JUKEBOX")
+        end
+
+        if inBoxRange(x, y, CREDITDOCSBTN.x, CREDITDOCSBTN.y, CREDITDOCSBTN.width, CREDITDOCSBTN.height) then -- Credits and docs button logic
+            exitRequester("CREDITS")
         end
     end
 end
