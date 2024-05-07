@@ -44,6 +44,7 @@ function love.load(args) -- Load some assets and things
     local classicBGM = false -- Variable to set the classic BGM instead of the new BGM. eventually, this can be set by the player.
     local envfile = nil -- Path to .env file for config
 
+    -- TODO: Do args parsing for path to .env files
     --[[do -- Load some config as .env
         local envPairs, err = denv.load(
             love.filesystem.getSourceBaseDirectory() 

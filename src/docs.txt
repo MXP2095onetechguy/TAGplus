@@ -32,4 +32,4 @@ With the .app file, you can access the insides.
     - Right click and click on show package content
     - Go to the contents folder and go to the resources folder
     - You should see a .love file. Unzip it just like how you unzip .love files.
-With the .exe and .appimage file, you better pray because Idk how to do the extraction.
+With the .exe and .appimage file, you better pray and cry because Idk how to do the extraction.
