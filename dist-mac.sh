@@ -17,6 +17,9 @@ plutil -replace CFBundleName -string "The Apul Game+" love.app/Contents/Info.pli
 plutil -replace CFBundleIdentifier -string "mxpsql.tagplus" love.app/Contents/Info.plist
 plutil -remove UTExportedTypeDeclarations love.app/Contents/Info.plist
 
+# Copy icon. We assume you runned icon-mac.sh
+cp ./icon.icns "./love.app/Contents/Resources/OS X AppIcon.icns"
+
 # Move ther love.app into a new name
 mv love.app tagplus
 mv tagplus tagplus.app
