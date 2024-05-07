@@ -27,4 +27,4 @@ while IFS="=" read -r filenam size; do
     magick convert ./icon.gitignored.png -resize $size "./iconset.gitignored.iconset/$filenam"
 done < iconmap.gitignored.txt
 
-iconutil -c icns iconset.gitignored.iconset icon.icns
+iconutil -c icns iconset.gitignored.iconset -o icon.icns
