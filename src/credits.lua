@@ -141,7 +141,7 @@ Classy - Philipp Janda (2013-2014) - MIT License
 
         love.graphics.print(txt, 
             (love.graphics.getWidth()/2) - (font:getWidth(txt)/2),
-            (love.graphics.getHeight()/2) - (font:getHeight(txt)/2)
+            (love.graphics.getHeight()/2) - (font:getHeight(txt)/2) - 50
         )
     end
 

@@ -35,6 +35,8 @@ function love.load(args) -- Load some assets and things
             if arg == "--config" or arg == "-c" then --Config file
                 if args[pos+1] then
                     envfile = args[pos+1]
+                else
+                    error("Missing file argument to " .. arg)
                 end
             end
         end

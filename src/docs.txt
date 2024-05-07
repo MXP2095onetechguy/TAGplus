@@ -13,6 +13,8 @@ There are 3 items.
 
 Turb mode is a harder version. Less helth, more intense song, and more DMKids.
 
+The game can be paused by removing focus from the game window.
+
 =JUKEBOX
 Its a jukebox. It allows you to listen to the songs without having to worry about gameplay.
 To exit, just click anywhere while on the jukebox screen.

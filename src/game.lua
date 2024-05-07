@@ -25,6 +25,7 @@ local world = nil -- Physics world
 local worldBorder = {} -- World border for the physics world
 local player = nil -- Player
 local dmKids = {} -- DMKids
+local items = {} -- Items that are dropped
 
 function game.focus(love, focus) -- Focus handler
     do -- Music playback focus check
