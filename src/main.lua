@@ -44,20 +44,49 @@ function love.load(args) -- Load some assets and things
     local classicBGM = false -- Variable to set the classic BGM instead of the new BGM. eventually, this can be set by the player.
     local envfile = nil -- Path to .env file for config
 
-    -- TODO: Do args parsing for path to .env files
-    --[[do -- Load some config as .env
-        local envPairs, err = denv.load(
-            love.filesystem.getSourceBaseDirectory() 
-            .. "/config.env"
-        )
-        if envPairs then -- Check if loaded
-            do -- Classic BGM mode parsin'
-                local classicBGMEnv = envPairs["CLASSICBGM"]
-                classicBGM = (((classicBGMEnv and (string.lower(classicBGMEnv) == "true")) and {true} or {false})[1])
-                -- error(classicBGMEnv)
+    do -- Actual Args Parsin'
+        for pos, arg in ipairs(args) do -- Parse args into two variables: pos for position and args for the arguments themselkves
+            if arg == "--config" or arg == "-c" then --Config file
+                if args[pos+1] then
+                    envfile = args[pos+1]
+                end
             end
         end
-    end]]
+    end
+
+    if envfile then -- Load some config as .env
+        local envPairs, err = denv.load(envfile)
+        if envPairs then -- Check if loaded
+            do -- Classic BGM mode parsin'
+                local classicBGMEnv = envPairs["CLASSICBGM"] -- Get dotenv
+
+                if classicBGMEnv == nil or not classicBGMEnv then -- Handle empty case
+                    classicBGMEnv = ""
+                end
+
+                classicBGMEnv = string.match(classicBGMEnv, "^%s*(.-)%s*$") -- String trim
+                classicBGMEnv = string.lower(classicBGMEnv) -- String lowering
+                
+                if -- Actually check for true
+                    classicBGMEnv == "true" or -- Inverse -> false
+                    classicBGMEnv == "tru" or -- Inverse -> fals
+                    classicBGMEnv == "sure" -- Inverse -> nah
+                then
+                    classicBGM = true
+                else 
+                    classicBGM = false
+                end
+            end
+        else
+            love.window.showMessageBox("Config Error!", 
+                "File '" .. envfile .. "' seems to have a problem with opening. \n" ..
+                "Config file will not be loaded, and game will proceed with defaults. \n" ..
+                "More specific error message: \n '" .. err .. "'",
+                "warning",
+                true
+            )
+        end
+    end
 
     love.graphics.setBackgroundColor(bgColor) -- Set a background color
     love.graphics.setNewFont("assets/font/Handlee.ttf", 18) -- Load a new font
@@ -145,6 +174,10 @@ function love.draw() -- Draw graphics and things
     elseif gameState == "HOME" then home.draw(love) 
     elseif gameState == "JUKEBOX" then jukebox.draw(love) 
     elseif gameState == "CREDITS" then credits.draw(love) end -- Draw the game
+end
+
+function love.wheelmoved(x, y)
+    if gameState == "CREDITS" then credits.wheelmoved(x, y) end
 end
 
 function love.quit() -- Handle some quit

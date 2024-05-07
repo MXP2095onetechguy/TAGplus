@@ -2,8 +2,40 @@ local credits = {} -- Exports table
 
 local exitRequester -- Method for exiting -> function(newState)
 
+local docs = "docs.txt" -- A path that becomes a fully expanded string of the documentation and then becomes an array.
+local docPages = nil
+local docsTR = nil -- Docs renderer
+local renderDocs = false -- Render docs?
+
 local DOCSBTN = {} -- Button for docs
 local EXITBTN = {} -- Button for exiting the screen
+
+function split(str, delim, maxNb) -- http://lua-users.org/wiki/SplitJoin
+    -- Eliminate bad cases...
+    if string.find(str, delim) == nil then
+       return { str }
+    end
+    if maxNb == nil or maxNb < 1 then
+       maxNb = 0    -- No limit
+    end
+    local result = {}
+    local pat = "(.-)" .. delim .. "()"
+    local nb = 0
+    local lastPos
+    for part, pos in string.gfind(str, pat) do
+       nb = nb + 1
+       result[nb] = part
+       lastPos = pos
+       if nb == maxNb then
+          break
+       end
+    end
+    -- Handle the last field
+    if nb ~= maxNb then
+       result[nb + 1] = string.sub(str, lastPos)
+    end
+    return result
+ end
 
 function inBoxRange(mx, my, rx, ry, rw, rh) -- A function used to check if mouse x and mouse y is in box?
     if (mx >= rx and mx <= (rx+rw)) then
@@ -14,13 +46,12 @@ function inBoxRange(mx, my, rx, ry, rw, rh) -- A function used to check if mouse
     return false
 end
 
-local docs = "docs.txt"
-
 
 function credits.load(love, erq) -- Load
     exitRequester = erq
     docs = love.filesystem.read(docs)
     assert(docs)
+    docs = split(docs, "=")
     
     do -- Create buttons
         local sw = love.graphics.getWidth()
@@ -72,9 +103,9 @@ end
 
 function credits.draw(love) -- Draw
     love.graphics.setColor(0, 0, 0, 1) -- Paint text
-    love.graphics.print("Credits!", 0, 0)
+    love.graphics.print("Credits and Documentation!", 0, 0)
 
-    do -- Credits things actually
+    if renderDocs == false then -- Credits things actually if not rendering docs
         local font = love.graphics.getFont()
         love.graphics.setColor(0, 0, 0, 1)
 
@@ -95,6 +126,18 @@ Classy - Philipp Janda (2013-2014) - MIT License
             (love.graphics.getWidth()/2) - (font:getWidth(txt)/2),
             (love.graphics.getHeight()/2) - (font:getHeight(txt)/2)
         )
+    else
+        local font = love.graphics.getFont()
+        love.graphics.setColor(0, 0, 0, 1) 
+        local scrollMsg = "Scroll up to move on the docs. No scroll backs! \nViewing page of docs (" .. renderDocs + 1 .. "/" .. #docs .. ")"
+        love.graphics.print(scrollMsg, love.graphics.getWidth() - font:getWidth(scrollMsg), 0)
+
+        local txt = docs[renderDocs+1]
+
+        love.graphics.print(txt, 
+            (love.graphics.getWidth()/2) - (font:getWidth(txt)/2),
+            (love.graphics.getHeight()/2) - (font:getHeight(txt)/2)
+        )
     end
 
     do -- Draw buttons
@@ -105,8 +148,8 @@ Classy - Philipp Janda (2013-2014) - MIT License
             love.graphics.rectangle("fill", DOCSBTN.x, DOCSBTN.y, DOCSBTN.width, DOCSBTN.height)
             love.graphics.setColor(DOCSBTN.msgColor.r, DOCSBTN.msgColor.g, DOCSBTN.msgColor.b, DOCSBTN.msgColor.a)
             love.graphics.print(DOCSBTN.msg, 
-                (DOCSBTN.x + (DOCSBTN.width/2)) - font:getWidth(DOCSBTN.msg), 
-                (DOCSBTN.y + DOCSBTN.height) - font:getHeight(DOCSBTN.msg)
+                (DOCSBTN.x + (DOCSBTN.width/2)) - (font:getWidth(DOCSBTN.msg)/2), 
+                (DOCSBTN.y + DOCSBTN.height) - (font:getHeight(DOCSBTN.msg))
             )
         end
 
@@ -122,9 +165,16 @@ Classy - Philipp Janda (2013-2014) - MIT License
     end
 end
 
+function credits.wheelmoved(_, y)
+    if renderDocs ~= false then
+        if y > 0 then renderDocs = (math.fmod(renderDocs + 1, #docs)) end
+    end
+end
+
 function credits.mousepressed(x, y, btn, _)
-    if inBoxRange(x, y, DOCSBTN.x, DOCSBTN.y, DOCSBTN.width, DOCSBTN.height) then
-        love.window.showMessageBox("Docs", docs, "info", true)
+    if inBoxRange(x, y, DOCSBTN.x, DOCSBTN.y, DOCSBTN.width, DOCSBTN.height) then -- Docs button
+        -- love.window.showMessageBox("Docs", docs, "info", true)
+        renderDocs = 0
     end
     if inBoxRange(x, y, EXITBTN.x, EXITBTN.y, EXITBTN.width, EXITBTN.height) then -- Exit button
         exitRequester("HOME")

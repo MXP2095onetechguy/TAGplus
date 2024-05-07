@@ -23,7 +23,7 @@ It can also show this documentation as a dialog box.
 TLDR: A guide and credit screen.
 
 
-=>HOW TO ACCESS THE ATTRIBS, LICENSE AND INTERNALS
+=HOW TO ACCESS THE ATTRIBS, LICENSE AND INTERNALS
 First, somehow extract the contents from the .love file, .app,  or .exe.
 With the .love file, just unzip it like a zip file as its a zip file.
     - Rename .love file to zip
@@ -33,3 +33,13 @@ With the .app file, you can access the insides.
     - Go to the contents folder and go to the resources folder
     - You should see a .love file. Unzip it just like how you unzip .love files.
 With the .exe and .appimage file, you better pray and cry because Idk how to do the extraction.
+
+=CONFIGURATION
+This game can be configured with a .env file.
+To do so, pass the .env file on the command line with the --config flag.
+It should look like this: [blah blah love exec or zip] --config cfg.env
+Or this for realism: love tagplus.love --config cfg.env
+
+here are some options
+- CLASSICBGM -> Select for the classic BGM instead of the new one. (true/false)
+
