@@ -21,10 +21,10 @@ icon_512x512@2x.png=1024x1024
 EOF
 
 # Make iconset directory
-mkdir -p iconset.gitignored.iconset
+mkdir -p icnsset.gitignored.iconset
 
 while IFS="=" read -r filenam size; do
-    magick convert ./icon.gitignored.png -resize $size "./iconset.gitignored.iconset/$filenam"
+    magick convert ./icon.gitignored.png -resize $size "./icnsset.gitignored.iconset/$filenam"
 done < iconmap.gitignored.txt
 
-iconutil -c icns iconset.gitignored.iconset -o icon.icns
+iconutil -c icns icnsset.gitignored.iconset -o icon.icns
