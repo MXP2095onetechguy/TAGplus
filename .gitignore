@@ -4,5 +4,6 @@
 **/*.kra-autosave.kra
 **/*.app/
 *.env
+*.icns
 
 *.gitignored.*
