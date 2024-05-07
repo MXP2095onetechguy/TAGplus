@@ -5,7 +5,7 @@ local exitRequester -- Method for exiting -> function(newState)
 local docs = "docs.txt" -- A path that becomes a fully expanded string of the documentation and then becomes an array.
 local docPages = nil
 local docsTR = nil -- Docs renderer
-local renderDocs = false -- Render docs?
+local renderDocs = false -- Render docs? Also acts as a page indicator.
 
 local DOCSBTN = {} -- Button for docs
 local EXITBTN = {} -- Button for exiting the screen
@@ -48,7 +48,10 @@ end
 
 
 function credits.load(love, erq) -- Load
+    -- Setup exit Requester
     exitRequester = erq
+
+    -- Load docs as array
     docs = love.filesystem.read(docs)
     assert(docs)
     docs = split(docs, "=")
@@ -109,6 +112,7 @@ function credits.draw(love) -- Draw
         local font = love.graphics.getFont()
         love.graphics.setColor(0, 0, 0, 1)
 
+        -- the text
         local txt = 
 [[
 This game was built with Love2D by MXPSQL.
@@ -127,6 +131,7 @@ Classy - Philipp Janda (2013-2014) - MIT License
             (love.graphics.getHeight()/2) - (font:getHeight(txt)/2)
         )
     else
+        -- Simple logic
         local font = love.graphics.getFont()
         love.graphics.setColor(0, 0, 0, 1) 
         local scrollMsg = "Scroll up to move on the docs. No scroll backs! \nViewing page of docs (" .. renderDocs + 1 .. "/" .. #docs .. ")"
@@ -166,15 +171,15 @@ Classy - Philipp Janda (2013-2014) - MIT License
 end
 
 function credits.wheelmoved(_, y)
-    if renderDocs ~= false then
+    if renderDocs ~= false then -- Scroll the documents only forwards
         if y > 0 then renderDocs = (math.fmod(renderDocs + 1, #docs)) end
     end
 end
 
 function credits.mousepressed(x, y, btn, _)
     if inBoxRange(x, y, DOCSBTN.x, DOCSBTN.y, DOCSBTN.width, DOCSBTN.height) then -- Docs button
-        -- love.window.showMessageBox("Docs", docs, "info", true)
-        renderDocs = 0
+        -- love.window.showMessageBox("Docs", docs, "info", true) -- Old method.
+        renderDocs = 0 -- Go to docs rendering mode
     end
     if inBoxRange(x, y, EXITBTN.x, EXITBTN.y, EXITBTN.width, EXITBTN.height) then -- Exit button
         exitRequester("HOME")

@@ -25,20 +25,6 @@ function love.focus(focus) -- Handle window focus
     if gameState == "GAME" then game.focus(love, focus) end
 end
 
-
-function dump(o)
-    if type(o) == 'table' then
-       local s = '{ '
-       for k,v in pairs(o) do
-          if type(k) ~= 'number' then k = '"'..k..'"' end
-          s = s .. '['..k..'] = ' .. dump(v) .. ','
-       end
-       return s .. '} '
-    else
-       return tostring(o)
-    end
- end
-
 -- Game lifecycle: Initializing loading, Update, Painting and Quitting
 function love.load(args) -- Load some assets and things
     local classicBGM = false -- Variable to set the classic BGM instead of the new BGM. eventually, this can be set by the player.
