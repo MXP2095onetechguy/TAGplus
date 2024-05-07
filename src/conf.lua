@@ -17,6 +17,7 @@ function libConf.getConf(t) -- Explicit is better than implicit. We fill the con
     t.window.borderless = false
     t.window.resizable = false
     t.window.fullscreen = false
+    t.window.icon = "assets/image/icon.png"
 
     -- Setup misc
     t.identity = "TheApulGamePlus"
