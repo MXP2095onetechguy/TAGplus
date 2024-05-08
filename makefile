@@ -11,7 +11,7 @@ clean: # clean
 	./clean.sh
 
 clobber: clean # clobber by cleaning with clean and removing all untracked files
-
+	git clean -xdf
 
 # OS specific rules
 package-unix: # Package for unix platforms
