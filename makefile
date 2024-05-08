@@ -10,6 +10,8 @@ run-packaged: # Run packaged .love files
 clean: # clean
 	./clean.sh
 
+clobber: clean # clobber by cleaning with clean and removing all untracked files
+
 
 # OS specific rules
 package-unix: # Package for unix platforms
