@@ -3,9 +3,13 @@ local game = {} -- A table for exporting the methods
 -- Import constants
 local consts = require("consts")
 
+-- Import cron for spawning
+local cron = require("libs/cron")
+
 -- Import game objects
 local abby = require("abby") -- Import the main player/Abby
 local dmkid = require("dmkid") -- Import the enemy/D-Money kid
+local item = require("items") -- Import the items
 
 local gameConf = {} -- Get config for game
 
@@ -24,6 +28,8 @@ local exitRequester = nil -- A callback that is invoked when the game requests a
 local world = nil -- Physics world
 local worldBorder = {} -- World border for the physics world
 local player = nil -- Player
+local dmKidSpawner = cron.every(2, function() spawnDmKid() end) -- Spawner
+local itemSpawner = cron.every(4, function() spawnItems() end) -- Spawner
 local dmKids = {} -- DMKids
 local items = {} -- Items that are dropped
 
@@ -68,6 +74,7 @@ function game.load(love, turb, bgmsrc, exitrequester) -- Onload game
         local meterPx = 64
         love.physics.setMeter(meterPx)
         world = love.physics.newWorld(0, 9.81*meterPx, true)
+        world:setCallbacks(worldCollisionCallback, nil, nil, nil)
     end
 
     do -- Set up the UI-Layered UI Rect
@@ -114,12 +121,28 @@ function game.load(love, turb, bgmsrc, exitrequester) -- Onload game
         bgmSource:setLooping(true) -- set Looping for BGM
         bgmSource:play() -- Play the BGM
     end
+
+    do
+        local i = item(love, world, "goldenapul")
+        table.insert(items, i)
+    end
 end
 
 function game.update(love, dt) -- Update game
     world:update(dt)
 
     player:update(love, dt)
+
+    for i, k in pairs(dmKids) do
+        k:update(love, dt)
+    end
+
+    for i, k in pairs(items) do
+        k:update(love, dt)
+    end
+
+    dmKidSpawner:update(dt) -- Update the spawner
+    itemSpawner:update(dt)
 end
 
 function game.draw(love) -- Paint the game
@@ -142,6 +165,15 @@ function game.draw(love) -- Paint the game
         end
 
         player:draw(love) -- Paint Abby, the player
+
+        -- Paint the dmKids
+        for i, k in pairs(dmKids) do
+            k:draw(love)
+        end
+
+        for i, k in pairs(items) do
+            k:draw(love)
+        end
     end
 
     do -- Painting Game UI
@@ -177,6 +209,10 @@ function game.draw(love) -- Paint the game
             love.graphics.print("Turb Mode", 0, 0)
         end
     end
+
+    if helth < 1 then
+        exitRequester("DED")
+    end
 end
 
 function game.exit(love) -- On when game is not played (game state is not playing game)
@@ -188,6 +224,79 @@ function game.mousepressed(x, y, button, _) -- Handle mouse clicks, for the play
 end
 
 function game.quit(love) -- On exit of the app itself
+end
+
+
+function worldCollisionCallback(a, b, coll)
+    local ua = a:getUserData()
+    local ub = b:getUserData()
+    --[[ 
+        print("Collision - A(" .. 
+        (ua and {ua} or {"nil"})[1]
+        .. ") B(" .. 
+        (ub and {ub} or {"nil"})[1]
+        .. ")") 
+    --]]
+
+    for i, k in pairs(dmKids) do -- Handle dmKid attacks
+        if (ua == "Abby" and k.fixture == b)
+            or (k.fixture == a and ub == "Abby") then
+            helth = helth - 1
+            dmKids[i]:destroy()
+            dmKids[i] = nil
+        end
+    end
+
+    for i, k in pairs(items) do -- Handle items
+
+        local itemtype = ""
+        if (ua == "Abby" and k.fixture == b) then
+            itemtype = ub
+        elseif (k.fixture == a and ub == "Abby") then
+            itemtype = ua
+        end
+
+        if string.match(itemtype, "goldenapul") then
+            for i, k in pairs(dmKids) do -- Destroy all dmKids
+                dmKids[i]:destroy()
+                dmKids[i] = nil
+            end
+        elseif string.match(itemtype, "apul") then
+            score = score + 1
+        end
+
+        items[i]:destroy()
+        items[i] = nil
+    end
+end
+
+function spawnDmKid()
+    do
+        local dmk = dmkid(love, world)
+        dmk:tp(
+            love.math.random(0, love.graphics.getWidth()),
+            love.math.random(0, love.graphics.getHeight())
+        )
+        dmk:ping(
+            (love.math.random(0, 1) and {true} or {false})[1]
+        )
+        table.insert(dmKids, dmk)
+    end
+end
+
+function spawnItems()
+    do
+        local it = (love.math.random(0, 2) and {"golden"} or {""})[1] .. "apul"
+        print(it)
+        local im = item(love, world,
+            it   
+        )
+        im:tp(
+            love.math.random(0, love.graphics.getWidth()),
+            love.math.random(0, love.graphics.getHeight())
+        )
+        table.insert(items, im)
+    end
 end
 
 return game

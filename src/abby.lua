@@ -9,6 +9,8 @@ function Abby:__init(love, world)
     self.shape = love.physics.newRectangleShape(self.image:getWidth(), self.image:getHeight()) -- Attach shape for Abby
     self.fixture = love.physics.newFixture(self.body, self.shape, 1) -- Create fixture for Abby's body and shape to join
 
+
+    self.fixture:setUserData("Abby") -- Set user data
     self.body:setFixedRotation(true) -- Setup body to prevent rotation
     self.fixture:setRestitution(0.7) -- Setup bounciness or restitution
 end

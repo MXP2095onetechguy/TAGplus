@@ -53,7 +53,7 @@ function credits.load(love, erq) -- Load
 
     -- Load docs as array
     docs = love.filesystem.read(docs)
-    assert(docs)
+    assert(docs) -- Assume that we read succesfully.
     docs = split(docs, "=")
     
     do -- Create buttons
@@ -124,6 +124,7 @@ Love2D - Love Development Team (2006-2024) - Zlib License
 Handlee Font - Joe Prince, Vissol (2011) - SIL Open Font License
 Dotenv - kooshie (2023) - MIT License
 Classy - Philipp Janda (2013-2014) - MIT License
+Cron - Enrique García Cota (2011) - MIT License
 ]]
 
         love.graphics.print(txt, 

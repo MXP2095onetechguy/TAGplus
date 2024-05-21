@@ -7,6 +7,7 @@ local game = require("game") -- Import the game logic
 local home = require("home") -- Import the home screen logic
 local jukebox = require("jukebox") -- Import the Jukebox logic
 local credits = require("credits") -- Import the credits and documentation logic
+local ded = require("ded") -- Import the game over screen logic
 
 -- App things
 local isGameSleeping = false -- A flag used for checking if the game should sleep or not. This could be used as a pause.
@@ -90,6 +91,8 @@ function love.load(args) -- Load some assets and things
 
     -- Eagerly load credit screen
     credits.load(love, function(state) gameState = state end)
+    -- Eagerly load the game over screen
+    ded.load(love, function(state) gameState = state end)
 
 end
 
@@ -130,6 +133,7 @@ function love.update(dt) -- Perform updates
     end
     
     if gameState == "DED" then -- Do Game over things if the gameState is DED
+        ded.update(love, dt)
     else
     end
 
@@ -143,7 +147,8 @@ function love.mousepressed(x, y, btn, istouch)
     if gameState == "GAME" then game.mousepressed(x, y, btn, istouch)
     elseif gameState == "HOME" then home.mousepressed(x, y, btn, istouch) 
     elseif gameState == "JUKEBOX" then jukebox.mousepressed(x, y, btn, istouch)
-    elseif gameState == "CREDITS" then credits.mousepressed(x, y, btn, istouch) end
+    elseif gameState == "CREDITS" then credits.mousepressed(x, y, btn, istouch) 
+    elseif gameState == "DED" then ded.mousepressed(x, y, btn, istouch) end
 end
 
 function love.draw() -- Draw graphics and things
@@ -161,7 +166,8 @@ function love.draw() -- Draw graphics and things
     if gameState == "GAME" then game.draw(love) 
     elseif gameState == "HOME" then home.draw(love) 
     elseif gameState == "JUKEBOX" then jukebox.draw(love) 
-    elseif gameState == "CREDITS" then credits.draw(love) end -- Draw the game
+    elseif gameState == "CREDITS" then credits.draw(love) 
+    elseif gameState == "DED" then ded.draw(love) end -- Draw the game
 end
 
 function love.wheelmoved(x, y)
