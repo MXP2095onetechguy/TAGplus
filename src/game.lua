@@ -89,21 +89,25 @@ function game.load(love, turb, bgmsrc, exitrequester) -- Onload game
         UIGround.body = love.physics.newBody(world, UIRect.width/2, love.graphics.getHeight()-(UIRect.height/2), "static")
         UIGround.shape = love.physics.newRectangleShape(UIRect.width, UIRect.height)
         UIGround.fixture = love.physics.newFixture(UIGround.body, UIGround.shape)
+        UIGround.fixture:setUserData("UIGround")
 
         local leftWall = {}
         leftWall.body = love.physics.newBody(world, (UIRect.height * -1)/2, love.graphics.getHeight()/2, "static")
         leftWall.shape = love.physics.newRectangleShape(UIRect.height, love.graphics.getHeight())
         leftWall.fixture = love.physics.newFixture(leftWall.body, leftWall.shape)
+        leftWall.fixture:setUserData("lWall")
 
         local rightWall = {}
         rightWall.body = love.physics.newBody(world, (UIRect.height/2) + love.graphics.getWidth(), love.graphics.getHeight()/2, "static")
         rightWall.shape = love.physics.newRectangleShape(UIRect.height, love.graphics.getHeight())
         rightWall.fixture = love.physics.newFixture(rightWall.body, rightWall.shape)
+        rightWall.fixture:setUserData("rWall")
 
         local roof = {}
         roof.body = love.physics.newBody(world, UIRect.width/2, (UIRect.height * -1)/2, "static")
         roof.shape = love.physics.newRectangleShape(UIRect.width, UIRect.height)
         roof.fixture = love.physics.newFixture(roof.body, roof.shape)
+        roof.fixture:setUserData("roofs")
 
         worldBorder.UIGround = UIGround
         worldBorder.leftWall = leftWall
@@ -230,7 +234,7 @@ end
 function worldCollisionCallback(a, b, coll)
     local ua = a:getUserData()
     local ub = b:getUserData()
-    --[[ 
+    ---[[ 
         print("Collision - A(" .. 
         (ua and {ua} or {"nil"})[1]
         .. ") B(" .. 
@@ -250,10 +254,10 @@ function worldCollisionCallback(a, b, coll)
     for i, k in pairs(items) do -- Handle items
 
         local itemtype = ""
-        if (ua == "Abby" and k.fixture == b) then
+        if (ua == "Abby" and k.fixture == b) or 
+            (k.fixture == a and ub == "Abby") then
             itemtype = ub
-        elseif (k.fixture == a and ub == "Abby") then
-            itemtype = ua
+            print("Items!")
         end
 
         if string.match(itemtype, "goldenapul") then
@@ -261,12 +265,15 @@ function worldCollisionCallback(a, b, coll)
                 dmKids[i]:destroy()
                 dmKids[i] = nil
             end
+
+            items[i]:destroy()
+            items[i] = nil
         elseif string.match(itemtype, "apul") then
             score = score + 1
-        end
 
-        items[i]:destroy()
-        items[i] = nil
+            items[i]:destroy()
+            items[i] = nil
+        end
     end
 end
 
@@ -286,8 +293,7 @@ end
 
 function spawnItems()
     do
-        local it = (love.math.random(0, 2) and {"golden"} or {""})[1] .. "apul"
-        print(it)
+        local it = ((love.math.random(1, 5) == 1) and {"golden"} or {""})[1] .. "apul"
         local im = item(love, world,
             it   
         )
